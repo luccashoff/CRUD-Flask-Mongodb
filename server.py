@@ -44,6 +44,25 @@ def create_user():
         print(ex) 
         print("***********")
 
+############################## UPDATE
+
+@app.route("/users/<id>", methods = ["PATCH"])
+def update_user(id):
+    try:
+        dbResponse = db.users.update_one({"_id":ObjectId(id)}, {"$set":{"name": request.form["name"]}})
+        #for attr in dir(dbResponse):
+         #   print(f"******{attr}******")
+        if dbResponse.modified_count ==1:
+            return Response (response = json.dumps({"message":"User Updated!"}), status = 200, mimetype="application/json")    
+        else: 
+            return Response (response = json.dumps({"message":"Nothing to Update!"}), status = 200, mimetype="application/json")    
+
+    except Exception as ex:
+        print("********************")
+        print(ex)
+        print("********************")
+        return Response (response = json.dumps({"message":"Sorry, Cannot Update!"}), status = 500, mimetype="application/json")
+
 ##############################
 
 if __name__ == "__main__":
