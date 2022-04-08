@@ -1,6 +1,8 @@
+from urllib import response
 from flask import Flask, Response, request
 import pymongo
 import json
+from bson.objectid import ObjectId
 app = Flask(__name__)
 
 
@@ -11,6 +13,20 @@ try:
 
 except:
     print ("ERROR, Cannot connect do DataBase.")
+
+##############################
+
+@app.route("/users", methods = ["GET"])
+def get_some_users():
+    try:
+        data = list(db.users.find())
+        for user in data:
+            user["_id"] = str(user["_id"])
+        return Response (response = json.dumps(data), status = 200, mimetype="application/json")
+
+    except Exception as ex:
+        print(ex)
+        return Response (response = json.dumps({"message":"cannot read users"}), status = 500, mimetype="application/json")
 
 ##############################
 
